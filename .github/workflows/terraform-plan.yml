@@ -46,21 +46,23 @@ jobs:
     - name: Determine changed directories
       id: changed-dirs
       run: |
-        CHANGED_DIRS=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | xargs -n 1 dirname | uniq)
+        CHANGED_DIRS=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | xargs -n 1 dirname | uniq | tr '\n' ',' | sed 's/,$//')
         echo "changed_dirs=$CHANGED_DIRS" >> $GITHUB_ENV
+        echo "CHANGED_DIRS=${CHANGED_DIRS}" >> $GITHUB_OUTPUT
 
     - name: Terraform operations for each changed directory
       run: |
-        for DIR in $CHANGED_DIRS; do
+        IFS=',' read -ra DIRS <<< "${{ env.CHANGED_DIRS }}"
+        for DIR in "${DIRS[@]}"; do
           echo "Running Terraform commands in directory: $DIR"
           cd $DIR
           terraform init
           terraform fmt -check
           terraform plan -detailed-exitcode -no-color -out=tfplan
-          terraform show -no-color tfplan > $DIR/tfplan-output.txt
-          echo "::set-output name=tfplan_output_path::$DIR/tfplan-output.txt"
+          terraform show -no-color tfplan > tfplan-output.txt
         done
       shell: bash
+
 
     - name: Upload all Terraform Plans
       uses: actions/upload-artifact@v4
