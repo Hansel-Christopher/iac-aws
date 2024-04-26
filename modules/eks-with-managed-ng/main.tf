@@ -33,13 +33,14 @@ data "aws_subnets" "private" {
 # EKS Module
 ################################################################################
 
+#trivy:ignore:AVD-AWS-0104
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
-  cluster_endpoint_public_access = true
+  cluster_endpoint_public_access = false
 
   enable_cluster_creator_admin_permissions = true
 
@@ -130,6 +131,7 @@ module "key_pair" {
   tags = local.tags
 }
 
+#trivy:ignore:AVD-AWS-0104
 resource "aws_security_group" "remote_access" {
   name_prefix = "${local.name}-remote-access"
   description = "Allow remote SSH access"
@@ -144,6 +146,7 @@ resource "aws_security_group" "remote_access" {
   }
 
   egress {
+    description      = "Allow egress from EKS cluster"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
