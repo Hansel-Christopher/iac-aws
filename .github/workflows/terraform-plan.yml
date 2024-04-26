@@ -131,10 +131,12 @@ jobs:
                 
   terraform-apply:
     name: 'Terraform Apply'
-    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    ## Disabled to avoid infra creation
+    # if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    if: false
     runs-on: ubuntu-latest
     environment: production
-    needs: [terraform-plan]
+    needs: [terraform-plan]        
     
     steps:
     # Checkout the repository to the GitHub Actions runner
