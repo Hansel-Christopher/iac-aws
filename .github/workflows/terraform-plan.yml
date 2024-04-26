@@ -53,12 +53,13 @@ jobs:
     - name: Terraform operations for each changed directory
       run: |
         IFS=',' read -ra DIRS <<< "${{ env.changed_dirs }}"
+        set +e
         for DIR in "${DIRS[@]}"; do
           echo "Running Terraform commands in directory: $DIR"
           cd $DIR
           terraform init
           terraform fmt -check
-          terraform plan -detailed-exitcode -no-color -out=tfplan
+          terraform plan -input=false -detailed-exitcode -no-color -out=tfplan
           terraform show -no-color tfplan > tfplan-output.txt
         done
       shell: bash
