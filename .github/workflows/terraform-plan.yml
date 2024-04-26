@@ -112,13 +112,22 @@ jobs:
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const body = `${process.env.SUMMARY}`;
-            github.rest.issues.createComment({
+            const body = `🔍 **Terraform Plan Summary:**\n${process.env.SUMMARY}\n`;
+            // Create or update the comment
+            const comment = await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: body
-            })
+            });
+            // Add a reaction to the comment
+            await github.rest.reactions.createForIssueComment({
+                comment_id: comment.data.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                content: 'eyes'  // This is the GitHub identifier for the 👀 emoji
+            });
+
                 
   terraform-apply:
     name: 'Terraform Apply'
