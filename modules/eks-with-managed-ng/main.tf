@@ -40,7 +40,7 @@ module "eks" {
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
-  cluster_endpoint_public_access = false
+  cluster_endpoint_public_access = true
 
   enable_cluster_creator_admin_permissions = true
 
