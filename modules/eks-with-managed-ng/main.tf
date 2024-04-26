@@ -75,6 +75,10 @@ module "eks" {
     default_node_group = {
       use_custom_launch_template = false
 
+      # Container runtime optimised OS
+      ami_type = "BOTTLEROCKET_x86_64"
+      platform = "bottlerocket"
+
       disk_size    = 50
       min_size     = var.ng_min_size
       max_size     = var.ng_max_size
