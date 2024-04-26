@@ -61,8 +61,10 @@ jobs:
           terraform fmt -check
           terraform plan -input=false -detailed-exitcode -no-color -out=tfplan
           terraform show -no-color tfplan > tfplan-output.txt
+          echo "::set-output name=tfplan_output_path::$(pwd)/tfplan-output.txt"
         done
       shell: bash
+      id: terraform-operations
 
 
     - name: Upload all Terraform Plans
@@ -73,6 +75,7 @@ jobs:
 
     - name: Create and Publish Summary Comments
       run: |
+        TFPLAN_OUTPUT_PATH="${{ steps.terraform-operations.outputs.tfplan_output_path }}"
         if [ -f "$TFPLAN_OUTPUT_PATH" ]; then
           SUMMARY=$(cat $TFPLAN_OUTPUT_PATH)
           echo "Terraform Plan Output for $DIR:" >> summary.md
@@ -87,17 +90,9 @@ jobs:
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const summary = fs.readFileSync('./summary.md', 'utf8');
+            const summaryPath = './summary.md';
+            const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf8') : 'No changes detected.';
             const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\nPlease review the proposed changes. 👀`;
             const comment = await github.rest.issues.createComment({
                 issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: body
-            });
-            await github.rest.reactions.createForIssueComment({
-                comment_id: comment.data.id,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                content: 'eyes'
-            });
+       
