@@ -9,7 +9,12 @@ repos:
     hooks:
       - id: terraform_fmt      
       # - id: terraform_validate
-      - id: terraform_tflint        
+      - id: terraform_tflint      
+      - id: terraform_checkov
+        args:
+          - --args=--quiet
+          - --args=--skip-check CKV_TF_1
+
       # - id: terraform_trivy
       #   args:
       #       - --args=--severity=CRITICAL

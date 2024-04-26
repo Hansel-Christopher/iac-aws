@@ -6,4 +6,5 @@ module "eks" {
   ng_desired_size       = 1
   ng_max_size           = 2
   instance_types        = ["t4.large"]
+
 }
