@@ -37,42 +37,55 @@ jobs:
       with:
         terraform_wrapper: false
 
-    - name: Get changed directories
-      id: changed-dirs
+    - name: Get changed Terraform files
+      id: changed-files
       uses: tj-actions/changed-files@v44
       with:
-        separator: ' '
         files: '**/*.tf'
 
-    - name: Output all changed directories
-      run: echo "Changed directories: ${{ steps.changed-dirs.outputs.all_changed_files }}"
-
-    - name: Terraform operations in changed directories
-      if: steps.changed-dirs.outputs.any_changed == 'true'
+    - name: Determine changed directories
+      id: changed-dirs
       run: |
-        CHANGED_DIRS=$(echo "${{ steps.changed-dirs.outputs.all_changed_files }}" | xargs -n 1 dirname | sort -u)
+        CHANGED_DIRS=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | xargs -n 1 dirname | uniq)
+        echo "changed_dirs=$CHANGED_DIRS" >> $GITHUB_ENV
+
+    - name: Terraform operations for each changed directory
+      run: |
         for DIR in $CHANGED_DIRS; do
-          echo "Running Terraform in $DIR"
+          echo "Running Terraform commands in directory: $DIR"
           cd $DIR
           terraform init
           terraform fmt -check
           terraform plan -detailed-exitcode -no-color -out=tfplan
-          terraform show -no-color tfplan
-          echo "::set-output name=tfplan::$(terraform show -no-color tfplan)"
-          cd -
+          terraform show -no-color tfplan > $DIR/tfplan-output.txt
+          echo "::set-output name=tfplan_output_path::$DIR/tfplan-output.txt"
         done
-      shell: bash
+        shell: bash
 
-    - name: Publish Terraform Plan to Task Summary
-      run: echo "${{ steps.tf-plan-string.outputs.summary }}" >> $GITHUB_STEP_SUMMARY
+    - name: Upload all Terraform Plans
+      uses: actions/upload-artifact@v4
+      with:
+        name: terraform-plans
+        path: '**/tfplan-output.txt'
+
+    - name: Create and Publish Summary Comments
+      run: |
+        if [ -f "$TFPLAN_OUTPUT_PATH" ]; then
+          SUMMARY=$(cat $TFPLAN_OUTPUT_PATH)
+          echo "Terraform Plan Output for $DIR:" >> summary.md
+          echo '```' >> summary.md
+          cat $TFPLAN_OUTPUT_PATH >> summary.md
+          echo '```' >> summary.md
+        fi
 
     - name: Push Terraform Output to PR
-      if: github.event_name == 'pull_request' && steps.changed-dirs.outputs.any_changed == 'true'
+      if: github.ref != 'refs/heads/main'
       uses: actions/github-script@v7
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const body = `🔍 **Terraform Plan Summary for Changed Directories:**\n${{ steps.tf-plan-string.outputs.tfplan }}\nPlease review the proposed changes. 👀`;
+            const summary = fs.readFileSync('./summary.md', 'utf8');
+            const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\nPlease review the proposed changes. 👀`;
             const comment = await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
