@@ -60,7 +60,7 @@ jobs:
           terraform show -no-color tfplan > $DIR/tfplan-output.txt
           echo "::set-output name=tfplan_output_path::$DIR/tfplan-output.txt"
         done
-        shell: bash
+      shell: bash
 
     - name: Upload all Terraform Plans
       uses: actions/upload-artifact@v4
