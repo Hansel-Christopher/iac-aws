@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 locals {
   name            = var.name
   cluster_version = var.cluster_version
@@ -86,11 +88,13 @@ module "eks" {
 
       enable_monitoring = var.enable_eks_monitoring
 
+      # Ensures minimal downtime during EKS node scaling
       update_config = {
         max_unavailable_percentage = 33
       }
 
       taints          = var.taints
+      
       create_iam_role = true
       iam_role_name   = "${local.name}-role"
       iam_role_additional_policies = {
@@ -99,6 +103,7 @@ module "eks" {
     }
   }
 
+  # Provide read-only access to 
   access_entries = {
     viewer_rbac = {
       principal_arn = aws_iam_role.this.arn
@@ -130,13 +135,10 @@ module "key_pair" {
 
   tags = local.tags
 }
-
-
 resource "aws_iam_role" "this" {
-
   name = "viewer"
 
-  # Just using for this example
+  # Updated policy for assuming role by any IAM user or SSO users in the account
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -145,7 +147,7 @@ resource "aws_iam_role" "this" {
         Effect = "Allow"
         Sid    = "Example"
         Principal = {
-          Service = "ec2.amazonaws.com"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         }
       },
     ]
