@@ -52,7 +52,7 @@ jobs:
 
     - name: Terraform operations for each changed directory
       run: |
-        IFS=',' read -ra DIRS <<< "${{ env.CHANGED_DIRS }}"
+        IFS=',' read -ra DIRS <<< "${{ env.changed_dirs }}"
         for DIR in "${DIRS[@]}"; do
           echo "Running Terraform commands in directory: $DIR"
           cd $DIR
