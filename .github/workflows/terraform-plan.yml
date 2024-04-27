@@ -90,6 +90,7 @@ jobs:
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const fs = require('fs');
             const summaryPath = './summary.md';
             const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf8') : 'No changes detected.';
             const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\nPlease review the proposed changes. 👀`;
