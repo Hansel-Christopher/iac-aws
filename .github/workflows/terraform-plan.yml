@@ -55,13 +55,15 @@ jobs:
         IFS=',' read -ra DIRS <<< "${{ env.changed_dirs }}"
         set +e
         for DIR in "${DIRS[@]}"; do
-          echo "Running Terraform commands in directory: $DIR"
-          cd $DIR
-          terraform init
-          terraform fmt -check
-          terraform plan -input=false -detailed-exitcode -no-color -out=tfplan
-          terraform show -no-color tfplan > tfplan-output.txt
-          echo "::set-output name=tfplan_output_path::$(pwd)/tfplan-output.txt"
+          (
+            echo "Running Terraform commands in directory: $DIR"
+            cd $DIR
+            terraform init
+            terraform fmt -check
+            terraform plan -input=false -detailed-exitcode -no-color -out=tfplan
+            terraform show -no-color tfplan > tfplan-output.txt
+            echo "::set-output name=tfplan_output_path::$(pwd)/tfplan-output.txt"
+          )
         done
       shell: bash
       id: terraform-operations
@@ -93,7 +95,7 @@ jobs:
             const fs = require('fs');
             const summaryPath = './summary.md';
             const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf8') : 'No changes detected.';
-            const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\nPlease review the proposed changes. 👀`;
+            const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\n 👀 Please review the proposed changes. `;
             const comment = await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 body: body,
