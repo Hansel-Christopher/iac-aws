@@ -77,14 +77,16 @@ jobs:
 
     - name: Create and Publish Summary Comments
       run: |
-        TFPLAN_OUTPUT_PATH="${{ steps.terraform-operations.outputs.tfplan_output_path }}"
-        if [ -f "$TFPLAN_OUTPUT_PATH" ]; then
-          SUMMARY=$(cat $TFPLAN_OUTPUT_PATH)
-          echo "Terraform Plan Output for $DIR:" >> summary.md
-          echo '```' >> summary.md
-          cat $TFPLAN_OUTPUT_PATH >> summary.md
-          echo '```' >> summary.md
-        fi
+        mkdir -p summaries
+        for plan in $(find . -name 'tfplan-output.txt'); do
+          DIR=$(dirname "$plan")
+          SUMMARY=$(cat "$plan")
+          echo "Terraform Plan Output for $DIR:" >> summaries/summary.md
+          echo '```' >> summaries/summary.md
+          cat "$plan" >> summaries/summary.md
+          echo '```' >> summaries/summary.md
+          echo '' >> summaries/summary.md
+        done
 
     - name: Push Terraform Output to PR
       if: github.ref != 'refs/heads/main'
@@ -93,7 +95,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const summaryPath = './summary.md';
+            const summaryPath = './summaries/summary.md';
             const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf8') : 'No changes detected.';
             const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\n`;
             const comment = await github.rest.issues.createComment({
@@ -108,7 +110,7 @@ jobs:
                 comment_id: comment.data.id,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                content: 'eyes'  // This is the GitHub identifier for the 👀 emoji
+                content: 'eyes'
             });
        
                 
