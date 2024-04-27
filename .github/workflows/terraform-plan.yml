@@ -96,6 +96,8 @@ jobs:
             const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\nPlease review the proposed changes. 👀`;
             const comment = await github.rest.issues.createComment({
                 issue_number: context.issue.number,
-                body: body
+                body: body,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
             });
        
