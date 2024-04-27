@@ -81,7 +81,7 @@ jobs:
         for plan in $(find . -name 'tfplan-output.txt'); do
           DIR=$(dirname "$plan")
           SUMMARY=$(cat "$plan")
-          echo "> Terraform Plan Output for `$DIR`:" >> summaries/summary.md
+          echo "<summary>Terraform Plan Output for `$DIR`:</summary>" >> summaries/summary.md
           echo "<details>" >> summaries/summary.md
           echo '```' >> summaries/summary.md
           cat "$plan" >> summaries/summary.md
