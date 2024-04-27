@@ -95,11 +95,51 @@ jobs:
             const fs = require('fs');
             const summaryPath = './summary.md';
             const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf8') : 'No changes detected.';
-            const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\n 👀 Please review the proposed changes. `;
+            const body = `🔍 **Detailed Terraform Plan Output:**\n${summary}\n`;
             const comment = await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 body: body,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
             });
+
+            // Add a reaction to the comment
+            await github.rest.reactions.createForIssueComment({
+                comment_id: comment.data.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                content: 'eyes'  // This is the GitHub identifier for the 👀 emoji
+            });
        
+                
+  terraform-apply:
+    name: 'Terraform Apply'
+    ## Disabled to avoid infra creation
+    # if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    if: false
+    runs-on: ubuntu-latest
+    environment: production
+    needs: [terraform-plan]        
+    
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+
+    # Download saved plan from artifacts  
+    - name: Download Terraform Plan
+      uses: actions/download-artifact@v4
+      with:
+        name: tfplan
+
+    # Terraform Apply
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
