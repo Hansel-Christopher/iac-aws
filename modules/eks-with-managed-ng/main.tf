@@ -93,8 +93,8 @@ module "eks" {
         max_unavailable_percentage = 33
       }
 
-      taints          = var.taints
-      
+      taints = var.taints
+
       create_iam_role = true
       iam_role_name   = "${local.name}-role"
       iam_role_additional_policies = {
