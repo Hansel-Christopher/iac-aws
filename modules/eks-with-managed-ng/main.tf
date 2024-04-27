@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 locals {
   name            = var.name
   cluster_version = var.cluster_version
@@ -75,22 +77,24 @@ module "eks" {
     default_node_group = {
       use_custom_launch_template = false
 
+      # Container runtime optimised OS
+      ami_type = "BOTTLEROCKET_x86_64"
+      platform = "bottlerocket"
+
       disk_size    = 50
       min_size     = var.ng_min_size
       max_size     = var.ng_max_size
       desired_size = var.ng_desired_size
 
       enable_monitoring = var.enable_eks_monitoring
-      remote_access = {
-        ec2_ssh_key               = module.key_pair.key_pair_name
-        source_security_group_ids = [aws_security_group.remote_access.id]
-      }
 
+      # Ensures minimal downtime during EKS node scaling
       update_config = {
         max_unavailable_percentage = 33
       }
 
       taints          = var.taints
+      
       create_iam_role = true
       iam_role_name   = "${local.name}-role"
       iam_role_additional_policies = {
@@ -99,6 +103,7 @@ module "eks" {
     }
   }
 
+  # Provide read-only access to 
   access_entries = {
     viewer_rbac = {
       principal_arn = aws_iam_role.this.arn
@@ -130,38 +135,10 @@ module "key_pair" {
 
   tags = local.tags
 }
-
-#trivy:ignore:AVD-AWS-0104
-resource "aws_security_group" "remote_access" {
-  name_prefix = "${local.name}-remote-access"
-  description = "Allow remote SSH access"
-  vpc_id      = data.aws_vpcs.vpc.ids[0]
-
-  ingress {
-    description = "SSH access"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["188.88.150.230/32"] # ssh access for debugging
-  }
-
-  egress {
-    description      = "Allow egress from EKS cluster"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  tags = merge(local.tags, { Name = "${local.name}-remote" })
-}
-
 resource "aws_iam_role" "this" {
-
   name = "viewer"
 
-  # Just using for this example
+  # Updated policy for assuming role by any IAM user or SSO users in the account
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -170,7 +147,7 @@ resource "aws_iam_role" "this" {
         Effect = "Allow"
         Sid    = "Example"
         Principal = {
-          Service = "ec2.amazonaws.com"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         }
       },
     ]
