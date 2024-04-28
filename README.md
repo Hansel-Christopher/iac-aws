@@ -29,10 +29,14 @@ Collection of IAC Terraform templates to manage AWS resources (EKS, IAM Roles, C
 
 1. cd `environments/prod/eks`
 2. Initialise terraform - `terraform init`
-3. Update terraform configuration
-4. Create a pull request
-5. CI checks will run to provide a summary of changes
-6. Terraform apply runs after PR is approved and merged to `main`
+3. Generate plan - `terraform plan`
+4. Verify the resources to be created
+4. Create the resources - `terraform apply`
+
+
+You can also utilise the GH Actions workflow integrated in this repo by simply raising a PR against any of the terraform configurations in an environment
+CI checks will run to provide a summary of changes
+Terraform apply runs after PR is approved and merged to `main`
 
 
 ## Pre-commit Hooks
