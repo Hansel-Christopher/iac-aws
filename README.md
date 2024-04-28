@@ -14,7 +14,6 @@ Collection of IAC Terraform templates to manage AWS resources (EKS, IAM Roles, C
     │           └── versions.tf
     └── modules/
         └── eks-with-managed-ng/
-            ├── backend.tf
             ├── main.tf
             ├── variables.tf
             ├── versions.tf
