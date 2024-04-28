@@ -12,18 +12,17 @@ Collection of IAC Terraform templates to manage AWS resources (EKS, IAM Roles, C
     │           ├── backend.tf
     │           ├── main.tf
     │           └── versions.tf
+    └── modules/
+        └── eks-with-managed-ng/
+            ├── backend.tf
+            ├── main.tf
+            ├── variables.tf
+            ├── versions.tf
+            └── outputs.tf
+    - .github/: Contains GitHub Actions CI/CD workflows
+    - .gitignore: Patterns to ignore when commiting files to Git repository
+
 ```
-└── **modules/**:/
-    └── **eks-with-managed-ng/**/
-        ├── **backend.tf**
-        ├── **main.tf**
-        ├── **variables.tf**
-        ├── **versions.tf**
-        └── **outputs.tf**
-
-- **.github/**: Contains GitHub Actions CI/CD workflows
-- **.gitignore**: Patterns to ignore when commiting files to Git repository
-
 
 
 ## Prerequisites
