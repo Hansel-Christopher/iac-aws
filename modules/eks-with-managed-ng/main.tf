@@ -113,3 +113,24 @@ module "eks" {
   tags = local.tags
 }
 
+module "eks_control_plane_alarm" {
+  source  = "terraform-aws-modules/cloudwatch/aws//modules/metric-alarm"
+  version = "~> 3.0"
+
+  alarm_name                = "eks-api-latency-high"
+  alarm_description         = "This alarm monitors high API server latency."
+  namespace                 = "AWS/EKS"
+  metric_name               = "apiserver_request_latencies"
+  statistic                 = "Average"
+  period                    = 60
+  evaluation_periods        = 2
+  threshold                 = 300000
+  comparison_operator       = "GreaterThanThreshold"
+  alarm_actions             = [var.sns_notification_arn]
+  insufficient_data_actions = []
+  treat_missing_data        = "missing"
+
+  dimensions = {
+    ClusterName = module.eks.cluster_name
+  }
+}
