@@ -34,7 +34,7 @@
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Cluster version to bootstrap with | `string` | `"1.29"` | no |
 | <a name="input_enable_eks_monitoring"></a> [enable\_eks\_monitoring](#input\_enable\_eks\_monitoring) | Flag to disable/enable the CW eks monitoring | `bool` | `false` | no |
 | <a name="input_instance_types"></a> [instance\_types](#input\_instance\_types) | List of instance types to be used for the nodegroups | `list(string)` | <pre>[<br>  "t4.large"<br>]</pre> | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the eks cluster | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | Name of the eks cluster | `string` | `"eks"` | no |
 | <a name="input_ng_desired_size"></a> [ng\_desired\_size](#input\_ng\_desired\_size) | Node group desired node count | `number` | `1` | no |
 | <a name="input_ng_max_size"></a> [ng\_max\_size](#input\_ng\_max\_size) | Node group maximum node count | `number` | `1` | no |
 | <a name="input_ng_min_size"></a> [ng\_min\_size](#input\_ng\_min\_size) | Node group minimum node count | `number` | `1` | no |

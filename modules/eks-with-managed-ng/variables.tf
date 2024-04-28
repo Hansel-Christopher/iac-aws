@@ -1,5 +1,6 @@
 variable "name" {
   type        = string
+  default     = "eks"
   description = "Name of the eks cluster"
 }
 
