@@ -75,10 +75,10 @@ module "eks" {
     }
   }
 
-  vpc_id     = data.aws_vpcs.vpc.ids[0]
+  vpc_id = data.aws_vpcs.vpc.ids[0]
   # Uses specifics subnets in different AZs for multi-AZ control and data plane
-  subnet_ids = data.aws_subnets.eks.ids
-  control_plane_subnet_ids = data.aws_subnets.eks.ids
+  subnet_ids               = data.aws_subnets.eks.ids
+  control_plane_subnet_ids = data.aws_subnets.private.ids
 
   eks_managed_node_group_defaults = {
     ami_type       = "AL2_x86_64"
@@ -86,21 +86,21 @@ module "eks" {
   }
   eks_managed_node_groups = {
     default_node_group = {
-      enable_monitoring = var.enable_eks_monitoring      
+      enable_monitoring = var.enable_eks_monitoring
       # Container runtime optimised OS
       ami_type = "BOTTLEROCKET_x86_64"
       platform = "bottlerocket"
-      
+
       # Ensures minimal downtime during EKS node scaling
       update_config = {
         max_unavailable_percentage = 33
       }
-      min_size     = var.ng_min_size
-      max_size     = var.ng_max_size
-      desired_size = var.ng_desired_size
-      disk_size    = 50
+      min_size                   = var.ng_min_size
+      max_size                   = var.ng_max_size
+      desired_size               = var.ng_desired_size
+      disk_size                  = 50
       use_custom_launch_template = false
-      
+
       taints = var.taints
 
       create_iam_role = true
