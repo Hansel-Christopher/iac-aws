@@ -10,4 +10,11 @@ terraform {
 
 provider "aws" {
   region = local.region
+  default_tags {
+    tags = {
+      Name = local.name
+      Team = "devops"
+      Org  = "example"
+    }
+  }
 }

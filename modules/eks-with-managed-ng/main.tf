@@ -2,12 +2,6 @@ locals {
   name            = var.name
   cluster_version = var.cluster_version
   region          = "ap-south-1"
-
-  tags = {
-    Name = local.name
-    Team = "devops"
-    Org  = "example"
-  }
 }
 
 data "aws_vpcs" "vpc" {
@@ -109,8 +103,6 @@ module "eks" {
       }
     }
   }
-
-  tags = local.tags
 }
 
 module "eks_control_plane_alarm" {
