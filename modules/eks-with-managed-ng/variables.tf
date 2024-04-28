@@ -15,6 +15,18 @@ variable "cluster_version" {
   description = "Cluster version to bootstrap with"
 }
 
+variable "node_group_ami_type" {
+  type        = string
+  default     = "BOTTLEROCKET_x86_64"
+  description = "Nodegroup AMI type"
+}
+
+variable "node_group_platform" {
+  type        = string
+  default     = "bottlerocket"
+  description = "Node group platform type"
+}
+
 variable "instance_types" {
   type        = list(string)
   default     = ["t4.large"]

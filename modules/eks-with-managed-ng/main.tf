@@ -80,8 +80,8 @@ module "eks" {
     default_node_group = {
       enable_monitoring = var.enable_eks_monitoring
       # Container runtime optimised OS
-      ami_type = "BOTTLEROCKET_x86_64"
-      platform = "bottlerocket"
+      ami_type = var.node_group_ami_type
+      platform = var.node_group_platform
 
       # Ensures minimal downtime during EKS node scaling
       update_config = {

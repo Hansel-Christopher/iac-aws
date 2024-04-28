@@ -38,6 +38,8 @@
 | <a name="input_ng_desired_size"></a> [ng\_desired\_size](#input\_ng\_desired\_size) | Node group desired node count | `number` | `1` | no |
 | <a name="input_ng_max_size"></a> [ng\_max\_size](#input\_ng\_max\_size) | Node group maximum node count | `number` | `1` | no |
 | <a name="input_ng_min_size"></a> [ng\_min\_size](#input\_ng\_min\_size) | Node group minimum node count | `number` | `1` | no |
+| <a name="input_node_group_ami_type"></a> [node\_group\_ami\_type](#input\_node\_group\_ami\_type) | Nodegroup AMI type | `string` | `"BOTTLEROCKET_x86_64"` | no |
+| <a name="input_node_group_platform"></a> [node\_group\_platform](#input\_node\_group\_platform) | Node group platform type | `string` | `"bottlerocket"` | no |
 | <a name="input_sns_notification_arn"></a> [sns\_notification\_arn](#input\_sns\_notification\_arn) | n/a | `list(string)` | `[]` | no |
 | <a name="input_taints"></a> [taints](#input\_taints) | Taints to be applied on the nodes | `list(any)` | `[]` | no |
 
