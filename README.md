@@ -3,14 +3,16 @@ Collection of IAC Terraform templates to manage AWS resources (EKS, IAM Roles, C
 
 ## Repository Structure
 
-.
-├── environments/
-│   ├── non-prod/
-│   └── prod/
-│       └── eks/
-│           ├── backend.tf
-│           ├── main.tf
-│           └── versions.tf
+```
+    .
+    ├── environments/
+    │   ├── non-prod/
+    │   └── prod/
+    │       └── eks/
+    │           ├── backend.tf
+    │           ├── main.tf
+    │           └── versions.tf
+```
 └── **modules/**:/
     └── **eks-with-managed-ng/**/
         ├── **backend.tf**
