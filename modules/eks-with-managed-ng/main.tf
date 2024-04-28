@@ -118,7 +118,7 @@ module "eks_control_plane_alarm" {
   evaluation_periods        = 2
   threshold                 = 300000
   comparison_operator       = "GreaterThanThreshold"
-  alarm_actions             = [var.sns_notification_arn]
+  alarm_actions             = var.sns_notification_arn
   insufficient_data_actions = []
   treat_missing_data        = "missing"
 
