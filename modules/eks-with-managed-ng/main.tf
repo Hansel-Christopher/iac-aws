@@ -1,5 +1,3 @@
-data "aws_caller_identity" "current" {}
-
 locals {
   name            = var.name
   cluster_version = var.cluster_version
@@ -112,46 +110,6 @@ module "eks" {
     }
   }
 
-  # Provide read-only access inside cluster
-  access_entries = {
-    viewer_rbac = {
-      principal_arn = aws_iam_role.this.arn
-      policy_associations = {
-        viewer = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
-          access_scope = {
-            type = "cluster"
-          }
-        }
-      }
-    }
-
-  }
-
   tags = local.tags
 }
 
-################################################################################
-# IAM Resources
-################################################################################
-
-resource "aws_iam_role" "this" {
-  name = "viewer"
-
-  # Updated policy for assuming role by any IAM user or SSO users in the account
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = "Example"
-        Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-        }
-      },
-    ]
-  })
-
-  tags = local.tags
-}
