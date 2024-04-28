@@ -3,18 +3,14 @@ repos:
     rev: "v0.17.0"
     hooks:
       - id: terraform-docs-go
-        args: ["markdown", "table", "--output-file", "README.md", "./"]
+        args: ["markdown", "table", "--output-file", "README.md", "./modules/eks-with-managed-ng"]
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: "v1.89.1"
     hooks:
-      - id: terraform_fmt      
-      # - id: terraform_validate
-      - id: terraform_tflint      
+      - id: terraform_fmt
+      - id: terraform_validate
+        exclude: ^modules/
       - id: terraform_checkov
         args:
           # - --args=--quiet
           - --args=--skip-check CKV_TF_1
-
-      # - id: terraform_trivy
-      #   args:
-      #       - --args=--severity=CRITICAL

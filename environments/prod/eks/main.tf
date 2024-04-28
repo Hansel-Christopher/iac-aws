@@ -4,6 +4,6 @@ module "eks" {
   enable_eks_monitoring = true
   ng_min_size           = 1
   ng_desired_size       = 1
-  ng_max_size           = 4
-  instance_types        = ["m6.large", "r6.large"]
+  ng_max_size           = 5
+  instance_types        = ["t3.large"]
 }
