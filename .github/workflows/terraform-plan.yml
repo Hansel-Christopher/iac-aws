@@ -82,6 +82,7 @@ jobs:
           DIR=$(dirname "$plan")
           SUMMARY=$(cat "$plan")
           echo "<summary>Terraform Plan Output for `$DIR`:</summary>" >> summaries/summary.md          
+          echo '' >> summaries/summary.md
           echo '```' >> summaries/summary.md
           cat "$plan" >> summaries/summary.md
           echo '```' >> summaries/summary.md          
