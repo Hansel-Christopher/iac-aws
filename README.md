@@ -7,7 +7,7 @@ The repository is organised for a multi-tenant setup. Under each `environment` t
 
 Ex: `environments/prod/eks` contains the terraform configuration for the prod eks clusters.
 
-The modules directory contains a collection of generic modules for different use-cases. These modules are source referenced by local path in the different environments. 
+The `modules/` directory contains a collection of standardised modules for different use-cases. These modules are source referenced by local path when invoked in the different environments. 
 
 This pattern ensures minimal code duplication, consistency across environments and reduced-scale of statefiles (reduced blast radius).
 
