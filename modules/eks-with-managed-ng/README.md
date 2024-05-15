@@ -8,9 +8,7 @@
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.47.0 |
+No providers.
 
 ## Modules
 
@@ -21,17 +19,14 @@
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [aws_subnets.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
-| [aws_subnets.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
-| [aws_vpcs.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpcs) | data source |
+No resources.
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Cluster version to bootstrap with | `string` | `"1.29"` | no |
+| <a name="input_control_plane_subnet_ids"></a> [control\_plane\_subnet\_ids](#input\_control\_plane\_subnet\_ids) | n/a | `list(string)` | n/a | yes |
 | <a name="input_enable_eks_monitoring"></a> [enable\_eks\_monitoring](#input\_enable\_eks\_monitoring) | Flag to disable/enable the CW eks monitoring | `bool` | `false` | no |
 | <a name="input_instance_types"></a> [instance\_types](#input\_instance\_types) | List of instance types to be used for the nodegroups | `list(string)` | <pre>[<br>  "t4.large"<br>]</pre> | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the eks cluster | `string` | `"eks"` | no |
@@ -40,8 +35,10 @@
 | <a name="input_ng_min_size"></a> [ng\_min\_size](#input\_ng\_min\_size) | Node group minimum node count | `number` | `1` | no |
 | <a name="input_node_group_ami_type"></a> [node\_group\_ami\_type](#input\_node\_group\_ami\_type) | Nodegroup AMI type | `string` | `"BOTTLEROCKET_x86_64"` | no |
 | <a name="input_node_group_platform"></a> [node\_group\_platform](#input\_node\_group\_platform) | Node group platform type | `string` | `"bottlerocket"` | no |
+| <a name="input_node_group_subnet_ids"></a> [node\_group\_subnet\_ids](#input\_node\_group\_subnet\_ids) | n/a | `list(string)` | n/a | yes |
 | <a name="input_sns_notification_arn"></a> [sns\_notification\_arn](#input\_sns\_notification\_arn) | n/a | `list(string)` | `[]` | no |
 | <a name="input_taints"></a> [taints](#input\_taints) | Taints to be applied on the nodes | `list(any)` | `[]` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | n/a | yes |
 
 ## Outputs
 
