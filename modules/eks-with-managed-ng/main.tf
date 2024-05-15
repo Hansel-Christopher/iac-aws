@@ -4,34 +4,6 @@ locals {
   region          = "ap-south-1"
 }
 
-data "aws_vpcs" "vpc" {
-  filter {
-    name   = "tag:Name"
-    values = ["default-vpc"]
-  }
-}
-
-data "aws_subnets" "private" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpcs.vpc.ids[0]]
-  }
-  tags = {
-    type = "private"
-  }
-
-}
-data "aws_subnets" "eks" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpcs.vpc.ids[0]]
-  }
-  tags = {
-    type = "private"
-  }
-
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
@@ -62,10 +34,10 @@ module "eks" {
     }
   }
 
-  vpc_id = data.aws_vpcs.vpc.ids[0]
+  vpc_id = var.vpc_id
   # Uses specifics subnets in different AZs for multi-AZ control and data plane
-  subnet_ids               = data.aws_subnets.eks.ids
-  control_plane_subnet_ids = data.aws_subnets.private.ids
+  subnet_ids               = var.node_group_subnet_ids
+  control_plane_subnet_ids = var.control_plane_subnet_ids
 
   eks_managed_node_group_defaults = {
     ami_type       = "AL2_x86_64"

@@ -62,3 +62,15 @@ variable "sns_notification_arn" {
   type    = list(string)
   default = []
 }
+
+variable "vpc_id" {
+  type = string
+}
+
+variable "control_plane_subnet_ids" {
+  type = list(string)
+}
+
+variable "node_group_subnet_ids" {
+  type = list(string)
+}
